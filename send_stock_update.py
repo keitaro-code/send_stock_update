@@ -6,7 +6,7 @@ import datetime
 LINE_TOKEN = "XVA2ErHPlRAC1aVXZ1TqwPtfMhZIPIZcL0k0xzXnfhx"
 
 # 取得株価と取得株数
-purchase_price = 10.0
+purchase_price = 9.6
 number_of_shares = 100
 
 def send_stock_update():
