@@ -2,7 +2,7 @@ name: Stock Price Notification
 
 on:
   schedule:
-    - cron: '0 23 * * *'  # UTCの23時、JSTの8時
+    - cron: '0 22 * * *'  # UTCの22時、JSTの7時
 
 jobs:
   build:
