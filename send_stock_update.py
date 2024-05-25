@@ -9,27 +9,30 @@ purchase_price = 9.6
 number_of_shares = 100
 
 def send_stock_update():
-    # 現在の株価を取得
-    ticker = yf.Ticker("OKLO")
-    oklo_data = ticker.info
+    try:
+        # 現在の株価を取得
+        ticker = yf.Ticker("OKLO")
+        hist = ticker.history(period="1d")
 
-    if 'regularMarketPrice' not in oklo_data:
-        message = "現在の株価データが取得できませんでした。"
-    else:
-        current_price = oklo_data['regularMarketPrice']
-        # 損益計算
-        current_value = current_price * number_of_shares
-        initial_value = purchase_price * number_of_shares
-        profit_loss = current_value - initial_value
-        profit_loss_percentage = (profit_loss / initial_value) * 100
+        if hist.empty:
+            message = "現在の株価データが取得できませんでした。"
+        else:
+            current_price = hist['Close'].iloc[-1]
+            # 損益計算
+            current_value = current_price * number_of_shares
+            initial_value = purchase_price * number_of_shares
+            profit_loss = current_value - initial_value
+            profit_loss_percentage = (profit_loss / initial_value) * 100
 
-        # メッセージ作成
-        message = (f"現在の株価 \nOKLO : ${current_price:.2f}\n"
-                   f"取得株価 : ${purchase_price:.2f}\n"
-                   f"取得株数 : {number_of_shares}株\n"
-                   f"現在の評価額 : ${current_value:.2f}\n"
-                   f"損益 : ${profit_loss:.2f}\n"
-                   f"損益率 : {profit_loss_percentage:.2f}%")
+            # メッセージ作成
+            message = (f"現在の株価 \nOKLO : ${current_price:.2f}\n"
+                       f"取得株価 : ${purchase_price:.2f}\n"
+                       f"取得株数 : {number_of_shares}株\n"
+                       f"現在の評価額 : ${current_value:.2f}\n"
+                       f"損益 : ${profit_loss:.2f}\n"
+                       f"損益率 : {profit_loss_percentage:.2f}%")
+    except Exception as e:
+        message = f"株価データの取得中にエラーが発生しました: {e}"
 
     # LINEにメッセージを送る
     line_notify_api = "https://notify-api.line.me/api/notify"
